@@ -14,6 +14,7 @@ import Searchbar from '../components/Searchbar';
 
 export default function ReviewList() {
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [query, setQuery] = useState('');
 
   const fetchReviews = async () => {
     const reviewResponse = await fetchAllReviews();
@@ -26,7 +27,7 @@ export default function ReviewList() {
 
   return (
     <>
-      <Searchbar />
+      <Searchbar query={query} setQuery={setQuery} />
       <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
         {reviews.map((review) => (
           <>
