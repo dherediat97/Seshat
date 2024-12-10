@@ -1,7 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Book } from '../types/types';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Container, Typography } from '@mui/material';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardMedia,
+  Container,
+  Typography,
+} from '@mui/material';
 import { fetchBook } from '../api/fetchBook';
 import LoadingScreen from '../components/LoadingScreen';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
@@ -26,19 +33,58 @@ export default function BookDetail() {
   if (isLoading || !book) return <LoadingScreen />;
 
   return (
-    <>
-      <Container>
-        <Button
-          component="label"
-          role={undefined}
-          onClick={(_) => {
-            navigate(-1);
+    <Container>
+      <Button
+        color="primary"
+        onClick={(_) => {
+          navigate(-1);
+        }}
+        startIcon={<ArrowBackIosNewIcon />}
+      >
+        Atrás
+      </Button>
+      <Typography
+        component="div"
+        variant="h4"
+        noWrap={true}
+        sx={{ textAlign: 'center', marginBottom: 16 }}
+      >
+        {book.title}
+      </Typography>
+      <Card sx={{ maxHeight: '1000px' }}>
+        <CardMedia
+          sx={{
+            height: '500px',
+            minHeight: '300px',
+            maxHeight: '700px',
+            objectFit: 'cover',
           }}
-          variant="contained"
-          startIcon={<ArrowBackIosNewIcon />}
-        ></Button>
-        <Typography>{book.title}</Typography>
-      </Container>
-    </>
+          image={book.imgSrc}
+          title={book.title}
+        />
+        <CardContent>
+          <Typography component="div" noWrap={true}>
+            ISBN: {book.isbn}
+          </Typography>
+          <Typography component="div" noWrap={true}>
+            Autor: {book.authorName}
+          </Typography>
+          <Typography component="div" noWrap={true}>
+            Editorial: {book.publisherName}
+          </Typography>
+          <Typography component="div" noWrap={true}>
+            Número de páginas: {book.pages}
+          </Typography>
+        </CardContent>
+      </Card>
+      <Typography
+        component="div"
+        variant="h4"
+        noWrap={true}
+        sx={{ textAlign: 'center', marginTop: 16 }}
+      >
+        Reseñas:
+      </Typography>
+    </Container>
   );
 }

@@ -6,7 +6,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/books/:isbn" element={<BookDetail />} />
+        <Route path="/book/:isbn" element={<BookDetail />} />
         <Route path="/books" element={<BookList />} />
         <Route path="/" element={<BookList />} />
       </Routes>

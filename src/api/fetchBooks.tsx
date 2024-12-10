@@ -8,13 +8,14 @@ export async function fetchAllBooks(page: number): Promise<Book[]> {
 
   const booksResponse = (await response.json()) as BookListResponse;
 
-  const books: Book[] = booksResponse.books.map((book: Book) => ({
+  const books: Book[] = booksResponse.books.map((book: any) => ({
     id: book.id,
     isbn: book.isbn,
-    authorName: book.authorName,
+    authorName: book.author_name,
+    imgSrc: book.img_url,
     title: book.title,
-    publisherName: book.publisherName,
-    pages: book.pages,
+    publisherName: book.publisher_name,
+    pages: book.num_pages,
   }));
 
   return books;

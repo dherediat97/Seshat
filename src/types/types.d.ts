@@ -9,6 +9,7 @@ export type BookListResponse = {
 export type Book = {
   id: number;
   isbn: string;
+  imgSrc: string;
   title: string;
   authorName: string;
   publisherName: string;

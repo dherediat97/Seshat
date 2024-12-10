@@ -8,5 +8,15 @@ export async function fetchBook(isbn: string): Promise<Book> {
 
   const bookResponse = await response.json();
 
-  return bookResponse;
+  const book: Book = {
+    id: bookResponse.id,
+    isbn: bookResponse.isbn,
+    authorName: bookResponse.author_name,
+    imgSrc: bookResponse.img_url,
+    title: bookResponse.title,
+    publisherName: bookResponse.publisher_name,
+    pages: bookResponse.num_pages,
+  };
+
+  return book;
 }

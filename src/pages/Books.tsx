@@ -1,4 +1,4 @@
-import { Container, List } from '@mui/material';
+import { Container, Grid2 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Book } from '../types/types';
 import { fetchAllBooks } from '../api/fetchBooks';
@@ -16,7 +16,7 @@ export default function BookList() {
     setIsLoading(true);
     const bookResponse = await fetchAllBooks(page);
     setBooks([...books, ...bookResponse]);
-    setPage(page++);
+    setPage((prevPage) => prevPage + 1);
     setIsLoading(false);
   };
 
@@ -29,7 +29,7 @@ export default function BookList() {
     ) {
       return;
     }
-    fetchAllBooks(page);
+    fetchBooks();
   };
 
   useEffect(() => {
@@ -52,11 +52,13 @@ export default function BookList() {
   return (
     <Container>
       <Searchbar query={query} setQuery={setQuery} />
-      <List>
+      <Grid2 rowSpacing={2} columnSpacing={2} container sx={{ width: '100%' }}>
         {filterBooks.map((book) => (
-          <BookItem book={book} key={book.id} />
+          <Grid2 key={book.id} size={{ xs: 2, sm: 5, md: 3 }}>
+            <BookItem book={book} />
+          </Grid2>
         ))}
-      </List>
+      </Grid2>
     </Container>
   );
 }
