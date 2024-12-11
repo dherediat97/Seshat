@@ -1,9 +1,8 @@
-import { baseUrlAPI } from '../app/app_urls';
 import { Book } from '../types/types';
 import { http } from './axios_instance';
 
 export async function fetchBook(isbn: string): Promise<Book | undefined> {
-  const response = await http.get(`${baseUrlAPI}/book/${isbn}`);
+  const response = await http.get(`/book/${isbn}`);
 
   if (response.status != 200) {
     return undefined;

@@ -1,9 +1,8 @@
-import { baseUrlAPI } from '../app/app_urls';
 import { Review, ReviewResponse } from '../types/types';
 import { http } from './axios_instance';
 
 export async function fetchAllReviews(): Promise<Review[]> {
-  const response = await http.get(`${baseUrlAPI}/reviews`);
+  const response = await http.get(`/reviews`);
 
   if (response.status != 200) {
     return [];

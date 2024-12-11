@@ -16,7 +16,6 @@ export default function BookList() {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   var [page, setPage] = useState(1);
-  const [error, setError] = useState(false);
 
   const fetchBooks = async () => {
     setIsLoading(true);
@@ -24,8 +23,6 @@ export default function BookList() {
     if (bookResponse) {
       setBooks([...books, ...bookResponse.books]);
       setPage((prevPage) => prevPage + 1);
-    } else {
-      setError(true);
     }
     setIsLoading(false);
   };
@@ -102,7 +99,7 @@ export default function BookList() {
         <AddItem onAddItem={(book) => onAddBook(book)} />
         <RestoreItems onRestore={() => onRestoreAll()} />
       </Stack>
-      {error ? (
+      {books.length == 0 ? (
         <Box
           justifyContent="center"
           alignItems="center"

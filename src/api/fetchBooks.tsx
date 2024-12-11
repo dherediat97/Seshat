@@ -1,11 +1,10 @@
-import { baseUrlAPI } from '../app/app_urls';
 import { Book, BookListResponse } from '../types/types';
 import { http } from './axios_instance';
 
 export async function fetchAllBooks(
   page: number
 ): Promise<BookListResponse | undefined> {
-  const response = await http.get(`${baseUrlAPI}/books?page=${page}`);
+  const response = await http.get(`/books?page=${page}`);
 
   if (response.status != 200) {
     return undefined;

@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { baseUrlAPI } from '../app/app_urls';
+import { AUTHORIZATION_KEY } from '../app/app_constants';
 
 export const http = axios.create({
-  baseURL: baseUrlAPI,
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     'content-type': 'application/json',
   },
@@ -10,7 +10,7 @@ export const http = axios.create({
 });
 
 http.interceptors.request.use((config) => {
-  const authToken = localStorage.getItem('authToken');
+  const authToken = localStorage.getItem(AUTHORIZATION_KEY);
   if (authToken) {
     config.headers.Authorization = `Bearer ${authToken}`;
   }
@@ -25,12 +25,12 @@ http.interceptors.response.use(
     if (status === 401) {
       // Handle unauthorized access
       http
-        .post(`${baseUrlAPI}/login`, {
+        .post(`/login`, {
           username: import.meta.env.VITE_API_USERNAME,
           password: import.meta.env.VITE_API_PASSWORD,
         })
         .then((response) => {
-          localStorage.setItem('authToken', response.data.token);
+          localStorage.setItem(AUTHORIZATION_KEY, response.data.token);
         });
     } else if (status === 404) {
       // Handle not found errors
