@@ -1,4 +1,4 @@
-import { Container, Grid2, Snackbar, SnackbarCloseReason } from '@mui/material';
+import { Grid2, Snackbar, SnackbarCloseReason } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Book } from '../types/types';
 import { fetchAllBooks } from '../api/fetchBooks';
@@ -54,7 +54,6 @@ export default function BookList() {
     if (reason === 'clickaway') {
       return;
     }
-
     setError(false);
   };
 
@@ -62,21 +61,22 @@ export default function BookList() {
   if (isLoading || !books) return <LoadingScreen />;
 
   return (
-    <Container>
+    <>
       <Snackbar
         open={error}
         autoHideDuration={6000}
         onClose={handleClose}
         message="No hay libros registrados"
       />
+
       <Searchbar query={query} setQuery={setQuery} />
-      <Grid2 rowSpacing={2} columnSpacing={2} container sx={{ width: '100%' }}>
+      <Grid2 container direction={'row'} rowSpacing={4} columnSpacing={4}>
         {filterBooks.map((book) => (
-          <Grid2 key={book.id} size={{ xs: 2, sm: 5, md: 3 }}>
+          <Grid2 key={book.id} size={{ xs: 6, sm: 4, md: 3 }}>
             <BookItem book={book} />
           </Grid2>
         ))}
       </Grid2>
-    </Container>
+    </>
   );
 }

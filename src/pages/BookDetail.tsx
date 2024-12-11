@@ -1,39 +1,61 @@
 import { useEffect, useState } from 'react';
-import { Book } from '../types/types';
+import { Book, Review } from '../types/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
+  Box,
   Button,
   Card,
   CardContent,
   CardMedia,
-  Container,
+  Grid2,
   Typography,
 } from '@mui/material';
 import { fetchBook } from '../api/fetchBook';
 import LoadingScreen from '../components/LoadingScreen';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
+import ReviewList from './Reviews';
+import { fetchBookReview } from '../api/fetchBookReviews';
 
 export default function BookDetail() {
-  const [book, setBook] = useState<Book>();
+  var [book, setBook] = useState<Book>();
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [bookId, setBookId] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const { isbn } = useParams();
   const navigate = useNavigate();
 
   async function getBook() {
     setIsLoading(true);
     const fetchedBook = await fetchBook(isbn as string);
+    setBookId(fetchedBook.id);
     setBook(fetchedBook);
     setIsLoading(false);
   }
 
+  async function getReviews() {
+    setIsLoadingReviews(true);
+    const fetchedReviews = await fetchBookReview(bookId as string);
+    setReviews(fetchedReviews);
+    setIsLoadingReviews(false);
+  }
   useEffect(() => {
     getBook();
   }, [isbn]);
 
+  useEffect(() => {
+    getReviews();
+  }, [bookId]);
+
   if (isLoading || !book) return <LoadingScreen />;
 
   return (
-    <Container>
+    <Box
+      justifyContent="center"
+      alignItems="center"
+      marginRight={8}
+      marginLeft={8}
+    >
       <Button
         color="primary"
         onClick={(_) => {
@@ -45,46 +67,75 @@ export default function BookDetail() {
       </Button>
       <Typography
         component="div"
-        variant="h4"
+        variant="h5"
         noWrap={true}
-        sx={{ textAlign: 'center', marginBottom: 16 }}
+        sx={{ marginBottom: 8, marginTop: 8 }}
       >
         {book.title}
       </Typography>
-      <Card sx={{ maxHeight: '1000px' }}>
-        <CardMedia
-          sx={{
-            height: '500px',
-            minHeight: '300px',
-            maxHeight: '700px',
-            objectFit: 'cover',
-          }}
-          image={book.imgSrc}
-          title={book.title}
-        />
-        <CardContent>
-          <Typography component="div" noWrap={true}>
-            ISBN: {book.isbn}
-          </Typography>
-          <Typography component="div" noWrap={true}>
-            Autor: {book.authorName}
-          </Typography>
-          <Typography component="div" noWrap={true}>
-            Editorial: {book.publisherName}
-          </Typography>
-          <Typography component="div" noWrap={true}>
-            Número de páginas: {book.pages}
-          </Typography>
-        </CardContent>
-      </Card>
-      <Typography
-        component="div"
-        variant="h4"
-        noWrap={true}
-        sx={{ textAlign: 'center', marginTop: 16 }}
-      >
-        Reseñas:
-      </Typography>
-    </Container>
+      <Grid2 container spacing={2}>
+        <Grid2 size={{ xs: 12, md: 3 }}>
+          <Card
+            sx={{
+              minWidth: 200,
+              minHeight: 400,
+              maxWidth: 400,
+              maxHeight: 800,
+            }}
+          >
+            <CardMedia
+              sx={{
+                width: 400,
+                height: 600,
+                minHeight: 200,
+                maxHeight: 600,
+                objectFit: 'scale-down',
+              }}
+              image={book.imgSrc}
+              title={book.title}
+            />
+            <CardContent>
+              <Typography component="div" noWrap={true}>
+                ISBN: {book.isbn}
+              </Typography>
+              <Typography component="div" noWrap={true}>
+                Autor: {book.authorName}
+              </Typography>
+              <Typography component="div" noWrap={true}>
+                Editorial: {book.publisherName}
+              </Typography>
+              <Typography component="div" noWrap={true}>
+                Número de páginas: {book.pages}
+              </Typography>
+            </CardContent>
+          </Card>
+        </Grid2>
+        <Grid2 size={{ xs: 12, md: 8 }}>
+          {isLoadingReviews ? (
+            <LoadingScreen />
+          ) : reviews.length > 0 ? (
+            <>
+              <Typography
+                component="div"
+                variant="h4"
+                noWrap={true}
+                sx={{ marginTop: 16, marginLeft: 8 }}
+              >
+                Reseñas:
+              </Typography>
+              <ReviewList reviews={reviews} />
+            </>
+          ) : (
+            <Typography
+              variant="h4"
+              sx={{ width: '100%', height: '100%', textAlign: 'center' }}
+              component={'div'}
+            >
+              No hay reseñas
+            </Typography>
+          )}
+        </Grid2>
+      </Grid2>
+    </Box>
   );
 }

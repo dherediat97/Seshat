@@ -1,4 +1,4 @@
-import { Container, TextField } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 
 type SearchbarProps = {
   query: string;
@@ -7,12 +7,19 @@ type SearchbarProps = {
 
 export default function Searchbar({ query, setQuery }: SearchbarProps) {
   return (
-    <Container sx={{ width: '100%' }}>
+    <Box
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      marginBottom={16}
+      marginTop={16}
+    >
       <TextField
         placeholder="Busca por título..."
+        sx={{ width: '400px' }}
         value={query}
         onChange={(event) => setQuery(event?.target.value)}
       />
-    </Container>
+    </Box>
   );
 }

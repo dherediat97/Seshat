@@ -14,14 +14,17 @@ type BookItemProps = {
 
 export default function BookItem({ book }: BookItemProps) {
   return (
-    <ListItem sx={{ marginBottom: 2, marginTop: 2 }}>
+    <ListItem sx={{ maxWidth: 400, paddingLeft: 8, paddingRight: 8 }}>
       <CardActionArea LinkComponent={'a'} href={`/book/${book.isbn}`}>
         <Card>
           <CardMedia
+            component={'img'}
             sx={{
+              height: 300,
+              margin: '0 auto',
+              minWidth: 200,
               maxHeight: 400,
-              minHeight: 300,
-              objectFit: 'container',
+              objectFit: 'scale-down',
             }}
             image={book.imgSrc}
             title={book.title}
