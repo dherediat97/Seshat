@@ -60,9 +60,13 @@ export default function BookItem({ book, onActionBook }: BookItemProps) {
           ) : (
             <></>
           )}
-          <IconButton onClick={() => navigateDetailsBook(book)}>
-            <DetailsIcon />
-          </IconButton>
+          {!book.isLocalBook ? (
+            <IconButton onClick={() => navigateDetailsBook(book)}>
+              <DetailsIcon />
+            </IconButton>
+          ) : (
+            <></>
+          )}
         </CardActions>
       </Card>
     </ListItem>

@@ -39,6 +39,7 @@ export default function BookList() {
   const onRestoreAll = () => {
     setBooks([]);
     setPage(1);
+
     fetchBooks();
     localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
   };

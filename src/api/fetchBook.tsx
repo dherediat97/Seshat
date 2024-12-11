@@ -1,13 +1,14 @@
 import { baseUrlAPI } from '../app/app_urls';
 import { Book } from '../types/types';
+import { http } from './axios_instance';
 
 export async function fetchBook(isbn: string): Promise<Book | undefined> {
-  const response = await fetch(`${baseUrlAPI}/book/${isbn}`);
+  const response = await http.get(`${baseUrlAPI}/book/${isbn}`);
 
-  if (!response.ok) {
+  if (response.status != 200) {
     return undefined;
   }
-  const bookResponse = await response.json();
+  const bookResponse = await response.data;
 
   const book: Book = {
     id: bookResponse.id,

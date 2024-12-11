@@ -1,16 +1,17 @@
 import { baseUrlAPI } from '../app/app_urls';
 import { Book, BookListResponse } from '../types/types';
+import { http } from './axios_instance';
 
 export async function fetchAllBooks(
   page: number
 ): Promise<BookListResponse | undefined> {
-  const response = await fetch(`${baseUrlAPI}/books?page=${page}`);
+  const response = await http.get(`${baseUrlAPI}/books?page=${page}`);
 
-  if (!response.ok) {
+  if (response.status != 200) {
     return undefined;
   }
 
-  const booksResponse = (await response.json()) as BookListResponse;
+  const booksResponse = (await response.data) as BookListResponse;
 
   const books: Book[] = booksResponse.books.map((book: any) => ({
     id: book.id,
