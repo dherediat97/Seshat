@@ -1,13 +1,18 @@
-import { Grid2, Snackbar, SnackbarCloseReason } from '@mui/material';
+import { Box, Grid2, Stack, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Book } from '../types/types';
 import { fetchAllBooks } from '../api/fetchBooks';
 import Searchbar from '../components/Searchbar';
 import BookItem from '../components/BookItem';
 import LoadingScreen from '../components/LoadingScreen';
+import AddItem from '../components/AddItem';
+import { LOCAL_BOOKS_KEY } from '../app/app_constants';
+import RestoreItems from '../components/RestoreItems';
 
 export default function BookList() {
-  const [books, setBooks] = useState<Book[]>([]);
+  const [books, setBooks] = useState<Book[]>(() => {
+    return JSON.parse(localStorage.getItem(LOCAL_BOOKS_KEY)!) || [];
+  });
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   var [page, setPage] = useState(1);
@@ -16,9 +21,35 @@ export default function BookList() {
   const fetchBooks = async () => {
     setIsLoading(true);
     const bookResponse = await fetchAllBooks(page);
-    setBooks([...books, ...bookResponse]);
-    setPage((prevPage) => prevPage + 1);
+    if (bookResponse) {
+      setBooks([...books, ...bookResponse.books]);
+      setPage((prevPage) => prevPage + 1);
+    } else {
+      setError(true);
+    }
     setIsLoading(false);
+  };
+
+  const onAddBook = (bookAdded: Book) => {
+    books.push(bookAdded);
+    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
+    fetchBooks();
+  };
+
+  const onRestoreAll = () => {
+    setBooks([]);
+    setPage(1);
+    fetchBooks();
+    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
+  };
+
+  const onActionBook = (bookToDelete: Book) => {
+    var bookNotDeleted: Book[] = books.filter(
+      (book) => book.isbn !== bookToDelete.isbn
+    );
+    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(bookNotDeleted));
+
+    setBooks(JSON.parse(localStorage.getItem(LOCAL_BOOKS_KEY)!));
   };
 
   //Infinite Scrolling
@@ -43,40 +74,62 @@ export default function BookList() {
   }, [isLoading]);
 
   //Search Books
-  const filterBooks = books.filter((book) => {
-    return book.title.toLowerCase().match(query.toLowerCase());
+  const filterBooks = books.filter((book, index) => {
+    return (
+      books.findIndex((other: any) => other.id === book.id) === index &&
+      book.title.toLowerCase().match(query.toLowerCase())
+    );
   });
 
-  const handleClose = (
-    _event: React.SyntheticEvent | Event,
-    reason?: SnackbarCloseReason
-  ) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-    setError(false);
-  };
-
   //LoadingBox
-  if (isLoading || !books) return <LoadingScreen />;
+  if (isLoading) return <LoadingScreen />;
 
   return (
     <>
-      <Snackbar
-        open={error}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        message="No hay libros registrados"
-      />
-
-      <Searchbar query={query} setQuery={setQuery} />
-      <Grid2 container direction={'row'} rowSpacing={4} columnSpacing={4}>
-        {filterBooks.map((book) => (
-          <Grid2 key={book.id} size={{ xs: 6, sm: 4, md: 3 }}>
-            <BookItem book={book} />
+      <Stack
+        direction="row"
+        sx={{
+          width: '100%',
+          marginTop: 8,
+          marginBottom: 8,
+          marginRight: 8,
+          marginLeft: 8,
+        }}
+        spacing={8}
+      >
+        <Searchbar query={query} setQuery={setQuery} />
+        <AddItem onAddItem={(book) => onAddBook(book)} />
+        <RestoreItems onRestore={() => onRestoreAll()} />
+      </Stack>
+      {error ? (
+        <Box
+          justifyContent="center"
+          alignItems="center"
+          minHeight="80vh"
+          display={'flex'}
+        >
+          <Typography variant="h4">No hay libros registrados</Typography>
+        </Box>
+      ) : (
+        <>
+          <Grid2
+            container
+            direction={'row'}
+            rowSpacing={8}
+            columnSpacing={8}
+            sx={{
+              flexWrap: 'wrap',
+              display: 'flex',
+            }}
+          >
+            {filterBooks.map((book, index) => (
+              <Grid2 key={index} size={{ xs: 6, sm: 5, md: 3, lg: 4, xl: 2 }}>
+                <BookItem book={book} onActionBook={() => onActionBook(book)} />
+              </Grid2>
+            ))}
           </Grid2>
-        ))}
-      </Grid2>
+        </>
+      )}
     </>
   );
 }

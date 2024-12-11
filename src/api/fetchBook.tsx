@@ -1,11 +1,12 @@
 import { baseUrlAPI } from '../app/app_urls';
 import { Book } from '../types/types';
 
-export async function fetchBook(isbn: string): Promise<Book> {
+export async function fetchBook(isbn: string): Promise<Book | undefined> {
   const response = await fetch(`${baseUrlAPI}/book/${isbn}`);
 
-  if (!response.ok) throw new Error('Failed to fetch books');
-
+  if (!response.ok) {
+    return undefined;
+  }
   const bookResponse = await response.json();
 
   const book: Book = {
@@ -16,6 +17,8 @@ export async function fetchBook(isbn: string): Promise<Book> {
     title: bookResponse.title,
     publisherName: bookResponse.publisher_name,
     pages: bookResponse.num_pages,
+    isLocalBook: false,
+    isDeleted: false,
   };
 
   return book;

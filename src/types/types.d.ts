@@ -1,8 +1,13 @@
 //Book Result Response of API REQUEST
 export type BookListResponse = {
   books: Book[];
+  info: InfoBookListResponse;
+};
+
+export type InfoBookListResponse = {
   page: number;
   totalSize: number;
+  lastPage: number;
 };
 
 //Book Class
@@ -14,6 +19,8 @@ export type Book = {
   authorName: string;
   publisherName: string;
   pages: number;
+  isLocalBook: boolean = false;
+  isDeleted: boolean = false;
 };
 
 export type ReviewResponse = {

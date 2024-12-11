@@ -1,10 +1,14 @@
 import { baseUrlAPI } from '../app/app_urls';
 import { Book, BookListResponse } from '../types/types';
 
-export async function fetchAllBooks(page: number): Promise<Book[]> {
+export async function fetchAllBooks(
+  page: number
+): Promise<BookListResponse | undefined> {
   const response = await fetch(`${baseUrlAPI}/books?page=${page}`);
 
-  if (!response.ok) throw new Error('Failed to fetch books');
+  if (!response.ok) {
+    return undefined;
+  }
 
   const booksResponse = (await response.json()) as BookListResponse;
 
@@ -16,7 +20,14 @@ export async function fetchAllBooks(page: number): Promise<Book[]> {
     title: book.title,
     publisherName: book.publisher_name,
     pages: book.num_pages,
+    isLocalBook: false,
+    isDeleted: false,
   }));
 
-  return books;
+  booksResponse.books = books.filter(
+    (book: any, index: number) =>
+      books.findIndex((other: any) => other.id === book.id) === index
+  );
+
+  return booksResponse;
 }

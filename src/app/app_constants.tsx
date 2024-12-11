@@ -1,0 +1,1 @@
+export const LOCAL_BOOKS_KEY = 'LOCAL_BOOKS_KEY';
