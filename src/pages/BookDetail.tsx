@@ -94,7 +94,7 @@ export default function BookDetail() {
         <>
           <Typography
             component="div"
-            variant="h5"
+            variant="h6"
             noWrap={true}
             sx={{ marginBottom: 8, marginTop: 8 }}
           >
