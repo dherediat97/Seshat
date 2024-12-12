@@ -34,7 +34,7 @@ http.interceptors.response.use(
         });
     } else if (status === 404) {
       // Handle not found errors
-      console.log('Method not found');
+      console.error('Method not found');
     } else {
       // Handle other errors
       console.error('An error occurred:', error);

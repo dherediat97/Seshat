@@ -28,7 +28,6 @@ export default function BookDetail() {
   async function getBook() {
     setIsLoading(true);
     const fetchedBook = await fetchBook(isbn as string);
-    console.log(fetchedBook);
     if (fetchedBook) {
       setBookId(fetchedBook.id);
       setBook(fetchedBook);
