@@ -102,19 +102,12 @@ export default function BookDetail() {
           </Typography>
           <Grid2 container spacing={2}>
             <Grid2 size={{ xs: 12, md: 3 }}>
-              <Card
-                sx={{
-                  minWidth: 200,
-                  minHeight: 400,
-                  maxWidth: 400,
-                  maxHeight: 800,
-                }}
-              >
+              <Card>
                 <CardMedia
                   sx={{
-                    width: 400,
-                    height: 600,
-                    minHeight: 200,
+                    width: 300,
+                    height: 400,
+                    margin: '0 auto',
                     maxHeight: 600,
                     objectFit: 'scale-down',
                   }}

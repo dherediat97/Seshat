@@ -147,7 +147,7 @@ export default function AddItem({ onAddItem }: AddItemProps) {
         onClick={(_e) => openCreateBookDialog()}
         startIcon={<BookIcon />}
       >
-        Añadir Libro
+        Añadir
       </Button>
     </>
   );

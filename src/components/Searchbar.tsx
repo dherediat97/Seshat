@@ -16,7 +16,7 @@ export default function Searchbar({ query, setQuery }: SearchbarProps) {
     >
       <TextField
         placeholder="Busca por título..."
-        sx={{ width: '380px' }}
+        size={'medium'}
         value={query}
         onChange={(event) => setQuery(event?.target.value)}
       />

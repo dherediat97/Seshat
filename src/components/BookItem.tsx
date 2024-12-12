@@ -1,8 +1,10 @@
 import {
+  Button,
   Card,
   CardActions,
   CardContent,
   CardMedia,
+  Grid2,
   IconButton,
   ListItem,
   Typography,
@@ -25,16 +27,16 @@ export default function BookItem({ book, onActionBook }: BookItemProps) {
   };
 
   return (
-    <ListItem sx={{ padding: 8 }}>
+    <ListItem sx={{ padding: 8, width: 600, marginRight: 8 }}>
       <Card>
         <CardMedia
           component={'img'}
           sx={{
-            width: '100%',
-            minWidth: '40%',
+            width: 300,
             height: 400,
             margin: '0 auto',
-            maxHeight: 400,
+            maxHeight: 600,
+            objectFit: 'scale-down',
           }}
           image={book.imgSrc}
           title={book.title}
@@ -61,9 +63,12 @@ export default function BookItem({ book, onActionBook }: BookItemProps) {
             <></>
           )}
           {!book.isLocalBook ? (
-            <IconButton onClick={() => navigateDetailsBook(book)}>
-              <DetailsIcon />
-            </IconButton>
+            <Grid2 container sx={{ justifyContent: 'flex-end' }}>
+              <Button onClick={() => navigateDetailsBook(book)}>
+                Detalles
+                <DetailsIcon />
+              </Button>
+            </Grid2>
           ) : (
             <></>
           )}

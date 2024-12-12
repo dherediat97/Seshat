@@ -121,7 +121,7 @@ export default function BookList() {
             }}
           >
             {filterBooks.map((book, index) => (
-              <Grid2 key={index} size={{ xs: 6, sm: 5, md: 3, lg: 4, xl: 2 }}>
+              <Grid2 key={index} size={{ xs: 12, sm: 6, md: 6, lg: 4, xl: 3 }}>
                 <BookItem book={book} onActionBook={() => onActionBook(book)} />
               </Grid2>
             ))}

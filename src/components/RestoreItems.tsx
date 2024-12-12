@@ -15,7 +15,7 @@ export default function RestoreItems({ onRestore }: RestoreItems) {
         onClick={(_) => onRestore()}
         startIcon={<BookIcon />}
       >
-        Recuperar libros
+        Recuperar
       </Button>
     </>
   );
