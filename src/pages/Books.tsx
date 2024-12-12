@@ -1,5 +1,5 @@
 import { Box, Grid2, Stack, Typography } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Book } from '../types/types';
 import { fetchAllBooks } from '../api/fetchBooks';
 import Searchbar from '../components/Searchbar';
@@ -16,6 +16,7 @@ export default function BookList() {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   var [page, setPage] = useState(1);
+  const wasAlreadyRequested = useRef();
 
   const fetchBooks = async () => {
     setIsLoading(true);
@@ -68,7 +69,7 @@ export default function BookList() {
 
   useEffect(() => {
     fetchBooks();
-  }, []);
+  }, [wasAlreadyRequested]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -84,7 +85,7 @@ export default function BookList() {
   });
 
   //LoadingBox
-  if (isLoading) return <LoadingScreen />;
+  if (isLoading && !books) return <LoadingScreen />;
 
   return (
     <>

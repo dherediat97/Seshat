@@ -9,17 +9,23 @@ export const http = axios.create({
   responseType: 'json',
 });
 
-http.interceptors.request.use((config) => {
-  const authToken = localStorage.getItem(AUTHORIZATION_KEY);
-  if (authToken) {
-    config.headers.Authorization = `Bearer ${authToken}`;
+http.interceptors.request.use(
+  (config) => {
+    const authToken = localStorage.getItem(AUTHORIZATION_KEY);
+    if (authToken) {
+      config.headers.Authorization = `Bearer ${authToken}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
 http.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  (orginalResponse) => orginalResponse,
+  async (error) => {
+    const originalRequest = error.config;
     const status = error.response ? error.response.status : null;
 
     if (status === 401) {
@@ -31,6 +37,7 @@ http.interceptors.response.use(
         })
         .then((response) => {
           localStorage.setItem(AUTHORIZATION_KEY, response.data.token);
+          return http(originalRequest);
         });
     } else if (status === 404) {
       // Handle not found errors
