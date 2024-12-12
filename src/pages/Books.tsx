@@ -24,6 +24,7 @@ export default function BookList() {
       setBooks([...books, ...bookResponse.books]);
       setPage((prevPage) => prevPage + 1);
     }
+    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(filterBooks));
     setIsLoading(false);
   };
 
@@ -33,12 +34,15 @@ export default function BookList() {
     fetchBooks();
   };
 
-  const onRestoreAll = () => {
-    setBooks([]);
-    setPage(1);
-
-    fetchBooks();
-    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
+  const onRestoreAll = async () => {
+    setIsLoading(true);
+    const bookResponse = await fetchAllBooks(1);
+    if (bookResponse) {
+      setBooks(bookResponse.books);
+      setPage(1);
+    }
+    setIsLoading(false);
+    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(bookResponse?.books));
   };
 
   const onActionBook = (bookToDelete: Book) => {
