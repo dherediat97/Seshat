@@ -1,5 +1,5 @@
 import { Box, Grid2, Snackbar, Stack, Typography } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Book } from '../types/types';
 import { fetchAllBooks } from '../api/fetchBooks';
 import Searchbar from '../components/Searchbar';
@@ -12,17 +12,17 @@ import RestoreItems from '../components/RestoreItems';
 export default function BookList() {
   const [books, setBooks] = useState<Book[]>([]);
   const [query, setQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  var [page, setPage] = useState(1);
-  const booksLoaded = useRef();
+  const [isLoading, setIsLoading] = useState(false);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [isBookCreated, setIsBookCreated] = useState(false);
 
   const fetchBooks = async () => {
     setIsLoading(true);
     const bookResponse = await fetchAllBooks(page);
     if (bookResponse) {
+      setTotalPages(bookResponse.info.totalPages);
       setBooks([...books, ...bookResponse.books]);
-      setPage((prevPage) => prevPage + 1);
     }
     localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(filterBooks));
     setIsLoading(false);
@@ -58,23 +58,39 @@ export default function BookList() {
   //Infinite Scrolling
   const handleScroll = () => {
     if (
-      window.innerHeight + document.documentElement.scrollTop !==
-        document.documentElement.offsetHeight ||
-      isLoading
+      document.body.scrollHeight - 300 <
+      window.scrollY + window.innerHeight
     ) {
-      return;
+      setIsLoading(true);
     }
-    fetchBooks();
   };
 
-  useEffect(() => {
-    fetchBooks();
-  }, [booksLoaded]);
+  function debounce(func: any, delay: number) {
+    let timeoutId: NodeJS.Timeout;
+    return function (...args: []) {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      timeoutId = setTimeout(() => {
+        func(...args);
+      }, delay);
+    };
+  }
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    fetchBooks();
+  }, [page]);
+
+  useEffect(() => {
+    if (isLoading && page < totalPages) {
+      setPage((prevPage) => prevPage + 1);
+    }
   }, [isLoading]);
+
+  useEffect(() => {
+    window.addEventListener('scroll', debounce(handleScroll, 100));
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   //Search Books
   const filterBooks = books.filter((book, index) => {

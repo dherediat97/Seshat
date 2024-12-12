@@ -3,7 +3,7 @@ import { red } from '@mui/material/colors';
 
 const theme = createTheme({
   cssVariables: true,
-  spacing: 2,
+  spacing: 1,
   palette: {
     mode: 'dark',
     primary: {

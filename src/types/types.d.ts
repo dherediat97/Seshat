@@ -7,7 +7,7 @@ export type BookListResponse = {
 export type InfoBookListResponse = {
   page: number;
   totalSize: number;
-  lastPage: number;
+  totalPages: number;
 };
 
 //Book Class
