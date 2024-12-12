@@ -116,6 +116,7 @@ export default function BookList() {
             rowSpacing={8}
             columnSpacing={8}
             sx={{
+              overflowX: 'hidden',
               flexWrap: 'wrap',
               display: 'flex',
             }}
