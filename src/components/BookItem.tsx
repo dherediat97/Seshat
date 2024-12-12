@@ -6,6 +6,7 @@ import {
   CardMedia,
   IconButton,
   ListItem,
+  Tooltip,
   Typography,
 } from '@mui/material';
 import { Book } from '../types/types';
@@ -18,9 +19,9 @@ type BookItemProps = {
 
 export default function BookItem({ book, onActionBook }: BookItemProps) {
   return (
-    <ListItem sx={{ padding: 8, width: 600, marginRight: 8 }}>
+    <ListItem sx={{ padding: 16, marginRight: 8 }}>
       <Card>
-        <CardActionArea href={`/book/${book.isbn}`}>
+        <CardActionArea href={!book.isLocalBook ? `/book/${book.isbn}` : ``}>
           <CardMedia
             component={'img'}
             sx={{
@@ -48,9 +49,11 @@ export default function BookItem({ book, onActionBook }: BookItemProps) {
         </CardActionArea>
         <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           {!book.isDeleted ? (
-            <IconButton onClick={() => onActionBook(book, false)}>
-              <DeleteIcon />
-            </IconButton>
+            <Tooltip title="Borrar libro de la memoria local">
+              <IconButton onClick={() => onActionBook(book, false)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
           ) : (
             <></>
           )}

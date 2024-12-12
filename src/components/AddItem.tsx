@@ -5,7 +5,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  IconButton,
   TextField,
+  Tooltip,
 } from '@mui/material';
 
 import BookIcon from '@mui/icons-material/Add';
@@ -140,15 +142,15 @@ export default function AddItem({ onAddItem }: AddItemProps) {
           <Button type="submit">Crear libro</Button>
         </DialogActions>
       </Dialog>
-      <Button
-        variant="contained"
-        color="primary"
-        sx={{ textTransform: 'capitalize', padding: 4 }}
-        onClick={(_e) => openCreateBookDialog()}
-        startIcon={<BookIcon />}
-      >
-        Añadir
-      </Button>
+      <Tooltip title="Añadir libros localmente">
+        <IconButton
+          color="primary"
+          sx={{ padding: 4 }}
+          onClick={(_e) => openCreateBookDialog()}
+        >
+          <BookIcon />
+        </IconButton>
+      </Tooltip>
     </>
   );
 }

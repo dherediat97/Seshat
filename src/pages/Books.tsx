@@ -1,4 +1,4 @@
-import { Box, Grid2, Stack, Typography } from '@mui/material';
+import { Box, Grid2, Snackbar, Stack, Typography } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 import { Book } from '../types/types';
 import { fetchAllBooks } from '../api/fetchBooks';
@@ -10,13 +10,12 @@ import { LOCAL_BOOKS_KEY } from '../app/app_constants';
 import RestoreItems from '../components/RestoreItems';
 
 export default function BookList() {
-  const [books, setBooks] = useState<Book[]>(() => {
-    return JSON.parse(localStorage.getItem(LOCAL_BOOKS_KEY)!) || [];
-  });
+  const [books, setBooks] = useState<Book[]>([]);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   var [page, setPage] = useState(1);
-  const wasAlreadyRequested = useRef();
+  const booksLoaded = useRef();
+  const [isBookCreated, setIsBookCreated] = useState(false);
 
   const fetchBooks = async () => {
     setIsLoading(true);
@@ -33,6 +32,7 @@ export default function BookList() {
     books.push(bookAdded);
     localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
     fetchBooks();
+    setIsBookCreated(true);
   };
 
   const onRestoreAll = async () => {
@@ -69,7 +69,7 @@ export default function BookList() {
 
   useEffect(() => {
     fetchBooks();
-  }, [wasAlreadyRequested]);
+  }, [booksLoaded]);
 
   useEffect(() => {
     window.addEventListener('scroll', handleScroll);
@@ -89,6 +89,11 @@ export default function BookList() {
 
   return (
     <>
+      <Snackbar
+        open={isBookCreated}
+        autoHideDuration={6000}
+        message="Libro creado correctamente"
+      />
       <Stack
         direction="row"
         sx={{

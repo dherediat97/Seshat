@@ -1,5 +1,5 @@
-import { Button } from '@mui/material';
-import BookIcon from '@mui/icons-material/RestoreFromTrash';
+import { IconButton, Tooltip } from '@mui/material';
+import RestoreBooksIcon from '@mui/icons-material/CloudDownload';
 
 type RestoreItems = {
   onRestore: () => void;
@@ -7,16 +7,14 @@ type RestoreItems = {
 
 export default function RestoreItems({ onRestore }: RestoreItems) {
   return (
-    <>
-      <Button
-        variant="contained"
+    <Tooltip title="Restaurar libros borrados localmente">
+      <IconButton
         color="primary"
-        sx={{ textTransform: 'capitalize', padding: 4 }}
+        sx={{ padding: 4 }}
         onClick={(_) => onRestore()}
-        startIcon={<BookIcon />}
       >
-        Recuperar
-      </Button>
-    </>
+        <RestoreBooksIcon />
+      </IconButton>
+    </Tooltip>
   );
 }
