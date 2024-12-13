@@ -1,4 +1,4 @@
-import { Box, TextField } from '@mui/material';
+import { Box, TextField, Tooltip } from '@mui/material';
 
 type SearchbarProps = {
   query: string;
@@ -14,12 +14,14 @@ export default function Searchbar({ query, setQuery }: SearchbarProps) {
       marginBottom={16}
       marginTop={16}
     >
-      <TextField
-        placeholder="Busca por título..."
-        size={'medium'}
-        value={query}
-        onChange={(event) => setQuery(event?.target.value)}
-      />
+      <Tooltip title="Puedes buscar por título, nombre de autor o nombre de la editorial">
+        <TextField
+          placeholder="Busca aqui..."
+          size={'medium'}
+          value={query}
+          onChange={(event) => setQuery(event?.target.value)}
+        />
+      </Tooltip>
     </Box>
   );
 }
