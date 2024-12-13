@@ -19,9 +19,11 @@ async function query(sqlQuery, params) {
       return results;
     }
   } catch (err) {
-    console.log(`Ha ocurrido un error en la consulta a la BBDD. Error: ${err}`);
+    console.error(
+      `Ha ocurrido un error en la consulta a la BBDD. Error: ${err}`
+    );
 
-    return undefined;
+    return -1;
   }
 }
 

@@ -29,9 +29,11 @@ async function fetchBooks(page = 1) {
 
 async function searchBooks(params) {
   try {
-    console.log(params);
     const results = await query(
-      `SELECT * FROM books WHERE title LIKE '%${params}%' OR author_name LIKE '%${params}%' OR publisher_name LIKE '%${params}%'`
+      `SELECT * FROM books WHERE LOWER(title) 
+       LIKE LOWER('%${params}%') OR LOWER(author_name)
+       LIKE LOWER('%${params}%') OR LOWER(publisher_name)
+       LIKE LOWER('%${params}%')`
     );
 
     const books = helper.emptyOrRows(results);
