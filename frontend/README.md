@@ -8,10 +8,10 @@
 
 # Instalación:
 
-- Clonar el repositorio usando Git
+- Clonar el repositorio de ambos proyectos usando Git
 
   ```shell
-  cd smartlibrary
+  cd smartlibrary/frontend
   ```
 
   ```shell
