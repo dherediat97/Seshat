@@ -3,7 +3,6 @@ import { Book, Review } from '../types/types';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
-  Button,
   Card,
   CardContent,
   CardMedia,
@@ -12,9 +11,9 @@ import {
 } from '@mui/material';
 import { fetchBook } from '../api/fetchBook';
 import LoadingScreen from '../components/LoadingScreen';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ReviewList from './Reviews';
 import { fetchBookReview } from '../api/fetchBookReviews';
+import BackButton from '../components/BackButton';
 
 export default function BookDetail() {
   var [book, setBook] = useState<Book>();
@@ -27,17 +26,21 @@ export default function BookDetail() {
 
   async function getBook() {
     setIsLoading(true);
-    const fetchedBook = await fetchBook(isbn as string);
-    if (fetchedBook) {
-      setBookId(fetchedBook.id);
-      setBook(fetchedBook);
-    } else {
-      const localBook = fetchLocalBook();
-      setBookId(localBook.id);
-      setBook(localBook);
+    try {
+      const fetchedBook = await fetchBook(isbn as string);
+      if (fetchedBook) {
+        setBookId(fetchedBook.id);
+        setBook(fetchedBook);
+      } else {
+        const localBook = fetchLocalBook();
+        setBookId(localBook.id);
+        setBook(localBook);
+      }
+    } catch (error) {
+      navigate('/404');
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }
 
   function fetchLocalBook(): Book {
@@ -70,15 +73,7 @@ export default function BookDetail() {
       marginRight={8}
       marginLeft={8}
     >
-      <Button
-        color="primary"
-        onClick={(_) => {
-          navigate(-1);
-        }}
-        startIcon={<ArrowBackIosNewIcon />}
-      >
-        Atrás
-      </Button>
+      <BackButton routeName={-1} />
       {!book ? (
         <Box
           justifyContent="center"

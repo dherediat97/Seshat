@@ -8,16 +8,16 @@ type SearchbarProps = {
 export default function Searchbar({ query, setQuery }: SearchbarProps) {
   return (
     <Box
-      display="flex"
-      justifyContent="center"
-      alignItems="center"
       marginBottom={16}
       marginTop={16}
+      alignContent={'center'}
+      alignItems={'center'}
+      sx={{ width: '100%' }}
     >
       <Tooltip title="Puedes buscar por título, nombre de autor o nombre de la editorial">
         <TextField
           placeholder="Busca aqui..."
-          size={'medium'}
+          fullWidth
           value={query}
           onChange={(event) => setQuery(event?.target.value)}
         />

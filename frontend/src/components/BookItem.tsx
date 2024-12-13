@@ -14,22 +14,22 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 type BookItemProps = {
   book: Book;
-  onActionBook: (book: Book, onActionBook: boolean) => void;
+  onDeleteBook: (book: Book, onDeleteBook: boolean) => void;
 };
 
-export default function BookItem({ book, onActionBook }: BookItemProps) {
+export default function BookItem({ book, onDeleteBook }: BookItemProps) {
   return (
-    <ListItem sx={{ padding: 16, marginRight: 8 }}>
+    <ListItem sx={{ padding: 8 }}>
       <Card>
         <CardActionArea href={!book.isLocalBook ? `/book/${book.isbn}` : ``}>
           <CardMedia
             component={'img'}
             sx={{
-              width: 300,
-              height: 400,
+              width: 365,
+              height: 500,
               margin: '0 auto',
               maxHeight: 600,
-              objectFit: 'cover',
+              objectFit: 'contain',
             }}
             image={book.imgSrc}
             title={book.title}
@@ -50,7 +50,7 @@ export default function BookItem({ book, onActionBook }: BookItemProps) {
         <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
           {!book.isDeleted ? (
             <Tooltip title="Borrar libro de la memoria local">
-              <IconButton onClick={() => onActionBook(book, false)}>
+              <IconButton onClick={() => onDeleteBook(book, false)}>
                 <DeleteIcon />
               </IconButton>
             </Tooltip>

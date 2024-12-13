@@ -24,10 +24,7 @@ export async function fetchAllBooks(
       isDeleted: false,
     }));
 
-    booksResponse.books = books.filter(
-      (book: any, index: number) =>
-        books.findIndex((other: any) => other.id === book.id) === index
-    );
+    booksResponse.books = books;
 
     return booksResponse;
   } catch (error) {

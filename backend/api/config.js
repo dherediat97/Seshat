@@ -6,7 +6,7 @@ const config = {
     password: process.env.DATABASE_PASSWORD,
     database: process.env.DATABASE_NAME,
   },
-  pageSize: 4,
+  pageSize: 8,
 };
 const isProd = process.env.IS_PROD;
 

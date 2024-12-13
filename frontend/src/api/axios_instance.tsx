@@ -32,8 +32,7 @@ http.interceptors.response.use(
     if (status === 401) {
       // Handle unauthorized access
       fetchLogin();
-      http(originalRequest);
-      window.location.reload();
+      return http(originalRequest);
     } else if (status === 404) {
       // Handle not found errors
       console.error('Method not found');

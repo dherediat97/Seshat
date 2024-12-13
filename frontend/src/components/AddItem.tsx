@@ -50,6 +50,7 @@ export default function AddItem({ onAddItem }: AddItemProps) {
             const publisherName = formDataJson.publisher_name;
             const numPages = formDataJson.num_pages;
             const book: Book = {
+              //A workaround Prevent the duplicated id with the current books
               id: (Math.random() * 50).toFixed(0),
               title: title,
               isbn: isbn,
@@ -76,7 +77,6 @@ export default function AddItem({ onAddItem }: AddItemProps) {
             Para crear un libro tienes que rellenar lo siguiente:
           </DialogContentText>
           <TextField
-            autoFocus
             required
             margin="dense"
             id="title"

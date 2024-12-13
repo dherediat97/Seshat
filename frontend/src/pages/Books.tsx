@@ -1,4 +1,11 @@
-import { Box, Grid2, Snackbar, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Grid2,
+  Snackbar,
+  Stack,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Book } from '../types/types';
 import { fetchAllBooks } from '../api/fetchBooks';
@@ -10,14 +17,21 @@ import { LOCAL_BOOKS_KEY } from '../app/app_constants';
 import RestoreItems from '../components/RestoreItems';
 import debounce from '../utils/scroll_utils';
 import { fetchSearchBooks } from '../api/fetchSearchBooks';
+import theme from '../theme';
+import SearchNotFoundPage from './SearchNotFound';
+
+const TRESHOLD_INFINITE_SCROLL = 0.85;
 
 export default function BookList() {
   const [books, setBooks] = useState<Book[]>([]);
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [searchError, setSearchError] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [isBookCreated, setIsBookCreated] = useState(false);
+  const [emptyLibrary, setEmptyLibrary] = useState(false);
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
   const fetchBooks = async () => {
     setIsLoading(true);
@@ -33,10 +47,12 @@ export default function BookList() {
   const searchBooks = async () => {
     setIsLoading(true);
     const bookResponse = await fetchSearchBooks(encodeURI(query));
-    if (bookResponse?.booksFound) {
+    if (bookResponse?.booksFound.length) {
+      setSearchError(false);
       setBooks(bookResponse.booksFound);
+    } else {
+      setSearchError(true);
     }
-    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
     setIsLoading(false);
   };
 
@@ -45,32 +61,36 @@ export default function BookList() {
     localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
     fetchBooks();
     setIsBookCreated(true);
+    setEmptyLibrary(false);
   };
 
   const onRestoreAll = async () => {
     setIsLoading(true);
+    setSearchError(false);
     const bookResponse = await fetchAllBooks(1);
     if (bookResponse) {
       setBooks(bookResponse.books);
       setPage(1);
     }
     setIsLoading(false);
+    setEmptyLibrary(false);
     localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(bookResponse?.books));
   };
 
-  const onActionBook = (bookToDelete: Book) => {
+  const onDeleteBook = (bookToDelete: Book) => {
     var bookNotDeleted: Book[] = books.filter(
       (book) => book.isbn !== bookToDelete.isbn
     );
     localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(bookNotDeleted));
 
     setBooks(JSON.parse(localStorage.getItem(LOCAL_BOOKS_KEY)!));
+    if (bookNotDeleted.length == 0) setEmptyLibrary(true);
   };
 
   //Infinite Scrolling
   const handleScroll = () => {
     if (
-      document.body.scrollHeight - 300 <
+      document.body.scrollHeight * TRESHOLD_INFINITE_SCROLL <
       window.scrollY + window.innerHeight
     ) {
       setIsLoading(true);
@@ -78,10 +98,8 @@ export default function BookList() {
   };
 
   useEffect(() => {
-    setTimeout(() => {
-      if (query == '') onRestoreAll();
-      if (query.length > 3) searchBooks();
-    }, 750);
+    if (query == '') onRestoreAll();
+    else if (query.length > 3) debounce(searchBooks(), 400);
   }, [query]);
 
   useEffect(() => {
@@ -99,11 +117,17 @@ export default function BookList() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  //Prevent duplicates books
+  const uniqueBooks = books.filter(
+    (book: any, index: number) =>
+      books.findIndex((other: any) => other.id === book.id) === index
+  );
+
   return (
     <>
       <Snackbar
         open={isBookCreated}
-        autoHideDuration={6000}
+        autoHideDuration={5000}
         message="Libro creado correctamente"
       />
       <Stack
@@ -121,7 +145,7 @@ export default function BookList() {
         <AddItem onAddItem={(book) => onAddBook(book)} />
         <RestoreItems onRestore={() => onRestoreAll()} />
       </Stack>
-      {!books ? (
+      {emptyLibrary ? (
         <Box
           justifyContent="center"
           alignItems="center"
@@ -132,23 +156,27 @@ export default function BookList() {
         </Box>
       ) : (
         <>
-          <Grid2
-            container
-            direction={'row'}
-            rowSpacing={8}
-            columnSpacing={8}
-            sx={{
-              overflowX: 'hidden',
-              flexWrap: 'wrap',
-              display: 'flex',
-            }}
-          >
-            {books.map((book, index) => (
-              <Grid2 key={index} size={{ xs: 12, sm: 6, md: 6, lg: 4, xl: 3 }}>
-                <BookItem book={book} onActionBook={() => onActionBook(book)} />
-              </Grid2>
-            ))}
-          </Grid2>
+          {searchError ? (
+            <SearchNotFoundPage />
+          ) : (
+            <Grid2
+              container
+              direction={isMobile ? 'column' : 'row'}
+              justifyContent={isMobile ? 'center' : 'flex-start'}
+              alignItems="center"
+              rowSpacing={8}
+              columnSpacing={8}
+            >
+              {uniqueBooks.map((book, index) => (
+                <Grid2 key={index}>
+                  <BookItem
+                    book={book}
+                    onDeleteBook={() => onDeleteBook(book)}
+                  />
+                </Grid2>
+              ))}
+            </Grid2>
+          )}
         </>
       )}
       {isLoading && page < totalPages ? <LoadingScreen /> : null}
