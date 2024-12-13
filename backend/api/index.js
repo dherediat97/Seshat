@@ -6,10 +6,10 @@ var bodyParser = require('body-parser');
 
 const jwt = require('jsonwebtoken');
 
-var booksRouter = require('../routes/books');
-var bookRouter = require('../routes/book');
-var reviewsRouter = require('../routes/reviews');
-const { isProd } = require('../config');
+var booksRouter = require('./routes/books');
+var bookRouter = require('./routes/book');
+var reviewsRouter = require('./routes/reviews');
+const { isProd } = require('./config');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
