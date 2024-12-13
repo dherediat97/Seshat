@@ -9,6 +9,7 @@ import AddItem from '../components/AddItem';
 import { LOCAL_BOOKS_KEY } from '../app/app_constants';
 import RestoreItems from '../components/RestoreItems';
 import debounce from '../utils/scroll_utils';
+import { fetchSearchBooks } from '../api/fetchSearchBooks';
 
 export default function BookList() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -25,7 +26,17 @@ export default function BookList() {
       setTotalPages(bookResponse.info.totalPages);
       setBooks([...books, ...bookResponse.books]);
     }
-    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(filterBooks));
+    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
+    setIsLoading(false);
+  };
+
+  const searchBooks = async () => {
+    setIsLoading(true);
+    const bookResponse = await fetchSearchBooks(encodeURI(query));
+    if (bookResponse?.booksFound) {
+      setBooks(bookResponse.booksFound);
+    }
+    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
     setIsLoading(false);
   };
 
@@ -67,6 +78,13 @@ export default function BookList() {
   };
 
   useEffect(() => {
+    setTimeout(() => {
+      if (query == '') onRestoreAll();
+      if (query.length > 3) searchBooks();
+    }, 750);
+  }, [query]);
+
+  useEffect(() => {
     fetchBooks();
   }, [page]);
 
@@ -80,11 +98,6 @@ export default function BookList() {
     window.addEventListener('scroll', debounce(handleScroll, 100));
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  //Search Books
-  const filterBooks = books.filter((book) => {
-    return book.title.toLowerCase().match(query.toLowerCase());
-  });
 
   return (
     <>
@@ -108,7 +121,7 @@ export default function BookList() {
         <AddItem onAddItem={(book) => onAddBook(book)} />
         <RestoreItems onRestore={() => onRestoreAll()} />
       </Stack>
-      {books.length == 0 ? (
+      {!books ? (
         <Box
           justifyContent="center"
           alignItems="center"
@@ -130,7 +143,7 @@ export default function BookList() {
               display: 'flex',
             }}
           >
-            {filterBooks.map((book, index) => (
+            {books.map((book, index) => (
               <Grid2 key={index} size={{ xs: 12, sm: 6, md: 6, lg: 4, xl: 3 }}>
                 <BookItem book={book} onActionBook={() => onActionBook(book)} />
               </Grid2>

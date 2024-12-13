@@ -1,5 +1,5 @@
 var express = require('express');
-const { fetchBooks } = require('../services/books');
+const { fetchBooks, searchBooks } = require('../services/books');
 const { insertBook } = require('../services/book');
 var router = express.Router();
 
@@ -22,6 +22,16 @@ router.post('/', async function (req, res, next) {
     else res.json({ message: 'not created' });
   } catch (error) {
     console.error('Ocurrió un error al insertar el libro. Error: ', error);
+    next(error);
+  }
+});
+router.get('/search/:query', async function (req, res, next) {
+  try {
+    const booksFound = await searchBooks(req.params.query);
+    if (booksFound) res.json({ booksFound });
+    else res.json([]);
+  } catch (error) {
+    console.error('Ocurrió un error al buscar libros. Error: ', error);
     next(error);
   }
 });

@@ -4,6 +4,10 @@ export type BookListResponse = {
   info: InfoBookListResponse;
 };
 
+export type BookSearchResponse = {
+  booksFound: Book[];
+};
+
 export type InfoBookListResponse = {
   page: number;
   totalSize: number;

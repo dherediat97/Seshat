@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
-    "backend": "nodemon --env-file=.env ./api/index.js localhost 8080",
+    "backend": "nodemon --env-file=.env ./api/api/index.js localhost 8080",
     "lint": "eslint ."
   },
   "dependencies": {

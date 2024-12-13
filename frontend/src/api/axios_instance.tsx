@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { AUTHORIZATION_KEY } from '../app/app_constants';
+import { fetchLogin } from './fetchLogin';
 
 export const http = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -30,15 +31,9 @@ http.interceptors.response.use(
 
     if (status === 401) {
       // Handle unauthorized access
-      http
-        .post(`/login`, {
-          username: import.meta.env.VITE_API_USERNAME,
-          password: import.meta.env.VITE_API_PASSWORD,
-        })
-        .then((response) => {
-          localStorage.setItem(AUTHORIZATION_KEY, response.data.token);
-          return http(originalRequest);
-        });
+      fetchLogin();
+      http(originalRequest);
+      window.location.reload();
     } else if (status === 404) {
       // Handle not found errors
       console.error('Method not found');

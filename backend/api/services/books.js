@@ -1,5 +1,6 @@
 const { query } = require('../bbdd/database');
 const { config } = require('../config');
+const { param } = require('../routes/books');
 const helper = require('../utils/helper');
 
 async function fetchBooks(page = 1) {
@@ -26,15 +27,22 @@ async function fetchBooks(page = 1) {
   };
 }
 
-async function insertBooks(body) {}
+async function searchBooks(params) {
+  try {
+    console.log(params);
+    const results = await query(
+      `SELECT * FROM books WHERE title LIKE '%${params}%' OR author_name LIKE '%${params}%' OR publisher_name LIKE '%${params}%'`
+    );
 
-async function updateBooks(params) {}
+    const books = helper.emptyOrRows(results);
 
-async function deleteBooks(params) {}
+    return books;
+  } catch (error) {
+    return [];
+  }
+}
 
 module.exports = {
   fetchBooks,
-  insertBooks,
-  updateBooks,
-  deleteBooks,
+  searchBooks,
 };
