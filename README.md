@@ -100,7 +100,7 @@ INSERT INTO `reviews` (`id`, `title`, `author_name`, `content`, `book_id`) VALUE
 npm run backend
 ```
 
-# Manual de Instalación de Smart Library Backend
+# Manual de Instalación de Smart Library Frontend
 
 ## Prerequisitos:
 
