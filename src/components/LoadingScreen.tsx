@@ -4,8 +4,12 @@ export default function LoadingScreen() {
   return (
     <Box
       justifyContent="center"
+      position={'fixed'}
+      bottom={0}
+      width={'100%'}
+      left={0}
       alignItems="center"
-      minHeight="100vh"
+      minHeight="5vh"
       display={'flex'}
     >
       <CircularProgress color={'primary'} />

@@ -8,6 +8,7 @@ import LoadingScreen from '../components/LoadingScreen';
 import AddItem from '../components/AddItem';
 import { LOCAL_BOOKS_KEY } from '../app/app_constants';
 import RestoreItems from '../components/RestoreItems';
+import debounce from '../utils/scroll_utils';
 
 export default function BookList() {
   const [books, setBooks] = useState<Book[]>([]);
@@ -65,18 +66,6 @@ export default function BookList() {
     }
   };
 
-  function debounce(func: any, delay: number) {
-    let timeoutId: NodeJS.Timeout;
-    return function (...args: []) {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
-      }
-      timeoutId = setTimeout(() => {
-        func(...args);
-      }, delay);
-    };
-  }
-
   useEffect(() => {
     fetchBooks();
   }, [page]);
@@ -93,15 +82,9 @@ export default function BookList() {
   }, []);
 
   //Search Books
-  const filterBooks = books.filter((book, index) => {
-    return (
-      books.findIndex((other: any) => other.id === book.id) === index &&
-      book.title.toLowerCase().match(query.toLowerCase())
-    );
+  const filterBooks = books.filter((book) => {
+    return book.title.toLowerCase().match(query.toLowerCase());
   });
-
-  //LoadingBox
-  if (isLoading && !books) return <LoadingScreen />;
 
   return (
     <>
@@ -155,6 +138,7 @@ export default function BookList() {
           </Grid2>
         </>
       )}
+      {isLoading && page < totalPages ? <LoadingScreen /> : null}
     </>
   );
 }
