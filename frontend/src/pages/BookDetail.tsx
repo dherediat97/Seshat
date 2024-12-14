@@ -31,22 +31,12 @@ export default function BookDetail() {
       if (fetchedBook) {
         setBookId(fetchedBook.id!);
         setBook(fetchedBook);
-      } else {
-        const localBook = fetchLocalBook();
-        setBookId(localBook.id!);
-        setBook(localBook);
-      }
+      } else navigate('/404');
     } catch (error) {
       navigate('/404');
     } finally {
       setIsLoading(false);
     }
-  }
-
-  function fetchLocalBook(): Book {
-    const localBooks: Book[] = JSON.parse(localStorage.getItem('localBooks')!);
-    const localBook: Book = localBooks.find((book) => book.isbn == isbn)!;
-    return localBook;
   }
 
   async function getReviews() {
