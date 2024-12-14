@@ -5,7 +5,7 @@ export default function NotFoundPage() {
     <>
       <BackButton routeName={'/'} />
       <img
-        src="assets/not_found_image.svg"
+        src="/assets/not_found_image.svg"
         style={{
           display: 'block',
           width: 360,

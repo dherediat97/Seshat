@@ -4,7 +4,7 @@ export default function SearchNotFoundPage() {
   return (
     <>
       <img
-        src="assets/search_not_found.svg"
+        src="/assets/search_not_found.svg"
         style={{
           display: 'block',
           width: 360,
