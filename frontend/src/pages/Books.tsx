@@ -2,6 +2,7 @@ import {
   Box,
   Grid2,
   Snackbar,
+  SnackbarCloseReason,
   Stack,
   Typography,
   useMediaQuery,
@@ -30,7 +31,7 @@ export default function BookList() {
   const [searchError, setSearchError] = useState(false);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [isBookCreated, setIsBookCreated] = useState(false);
+  const [isSnackbarShown, setSnackBarShown] = useState(false);
   const [emptyLibrary, setEmptyLibrary] = useState(false);
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
@@ -63,7 +64,7 @@ export default function BookList() {
 
   const onAddBook = (bookAdded: Book) => {
     setBooks([...books, bookAdded]);
-    setIsBookCreated(true);
+    setSnackBarShown(true);
     setEmptyLibrary(false);
   };
 
@@ -85,6 +86,17 @@ export default function BookList() {
 
     setBooks(JSON.parse(localStorage.getItem(LOCAL_BOOKS_KEY)!));
     if (bookNotDeleted.length == 0) setEmptyLibrary(true);
+  };
+
+  const handleClose = (
+    _: React.SyntheticEvent | Event,
+    reason?: SnackbarCloseReason
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setSnackBarShown(false);
   };
 
   //Infinite Scrolling
@@ -121,7 +133,8 @@ export default function BookList() {
   return (
     <>
       <Snackbar
-        open={isBookCreated}
+        onClose={handleClose}
+        open={isSnackbarShown}
         autoHideDuration={5000}
         message="Libro creado correctamente"
       />

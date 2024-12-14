@@ -11,7 +11,7 @@ import {
 } from '@mui/material';
 
 import BookIcon from '@mui/icons-material/Add';
-import { FormEvent, useState } from 'react';
+import React, { FormEvent, useState } from 'react';
 import { Book } from '../types/types';
 import { LOCAL_BOOKS_KEY } from '../app/app_constants';
 
@@ -22,11 +22,37 @@ type AddItemProps = {
 export default function AddItem({ onAddItem }: AddItemProps) {
   const [open, setOpen] = useState(false);
 
+  const [title, setTitle] = useState('');
+  const [isbn, setIsbn] = useState('');
+  const [authorName, setAuthorName] = useState('');
+  const [publisherName, setPublisherName] = useState('');
+  const [numPages, setNumPages] = useState('');
+  const [imgUrl, setImgUrl] = useState('');
+
+  const [titleError, setTitleError] = useState(false);
+  const [isbnError, setIsbnError] = useState(false);
+  const [authorNameError, setAuthorNameError] = useState(false);
+  const [publisherNameError, setPublisherNameError] = useState(false);
+  const [numPagesError, setNumPagesError] = useState(false);
+  const [imgUrlError, setImgUrlError] = useState(false);
+
   const openCreateBookDialog = () => {
     setOpen(true);
   };
 
   const handleClose = () => {
+    setTitle('');
+    setIsbn('');
+    setAuthorName('');
+    setPublisherName('');
+    setNumPages('');
+    setImgUrl('');
+    setTitleError(false);
+    setIsbnError(false);
+    setAuthorNameError(false);
+    setPublisherNameError(false);
+    setNumPagesError(false);
+    setImgUrlError(false);
     setOpen(false);
   };
 
@@ -40,10 +66,10 @@ export default function AddItem({ onAddItem }: AddItemProps) {
     const formDataJson = Object.fromEntries((formData as any).entries());
     const title = formDataJson.title;
     const isbn = formDataJson.isbn;
-    const imgBook = formDataJson.img_book;
     const authorName = formDataJson.author_name;
     const publisherName = formDataJson.publisher_name;
     const numPages = formDataJson.num_pages;
+    const imgBook = formDataJson.img_book;
     const book: Book = {
       title: title,
       isbn: isbn,
@@ -59,6 +85,72 @@ export default function AddItem({ onAddItem }: AddItemProps) {
     localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(localBooks));
     onAddItem(book);
     handleClose();
+  };
+
+  const validateTitle = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setTitle(e.target.value);
+    if (e.target.validity.valid) {
+      setTitleError(false);
+    } else {
+      setTitleError(true);
+    }
+  };
+
+  const validateIsbn = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setIsbn(e.target.value);
+    if (e.target.validity.valid) {
+      setIsbnError(false);
+    } else {
+      setIsbnError(true);
+    }
+  };
+
+  const validateAuthorName = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setAuthorName(e.target.value);
+    if (e.target.validity.valid) {
+      setAuthorNameError(false);
+    } else {
+      setAuthorNameError(true);
+    }
+  };
+
+  const validatePublisherName = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setPublisherName(e.target.value);
+    if (e.target.validity.valid) {
+      setPublisherNameError(false);
+    } else {
+      setPublisherNameError(true);
+    }
+  };
+
+  const validateNumPages = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setNumPages(e.target.value);
+    if (e.target.validity.valid) {
+      setNumPagesError(false);
+    } else {
+      setNumPagesError(true);
+    }
+  };
+
+  const validateImgUrl = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setImgUrl(e.target.value);
+    if (e.target.validity.valid) {
+      setImgUrlError(false);
+    } else {
+      setImgUrlError(true);
+    }
   };
 
   return (
@@ -83,11 +175,26 @@ export default function AddItem({ onAddItem }: AddItemProps) {
             name="title"
             label="Título"
             type="text"
+            helperText={titleError ? 'Título del libro inválido' : ''}
+            value={title}
+            error={titleError}
+            onChange={(event) => validateTitle(event)}
             fullWidth
             variant="standard"
           />
           <TextField
             required
+            slotProps={{
+              htmlInput: {
+                maxLength: 13,
+                minLength: 13,
+                pattern: '[0-9]{13}',
+              },
+            }}
+            helperText={isbnError ? 'Isbn inválido' : ''}
+            value={isbn}
+            error={isbnError}
+            onChange={(event) => validateIsbn(event)}
             margin="dense"
             id="isbn"
             name="isbn"
@@ -98,6 +205,10 @@ export default function AddItem({ onAddItem }: AddItemProps) {
           />
           <TextField
             required
+            helperText={authorNameError ? 'Nombre de autor inválido' : ''}
+            value={authorName}
+            error={authorNameError}
+            onChange={(event) => validateAuthorName(event)}
             margin="dense"
             id="author_name"
             name="author_name"
@@ -108,6 +219,12 @@ export default function AddItem({ onAddItem }: AddItemProps) {
           />
           <TextField
             required
+            helperText={
+              publisherNameError ? 'Nombre de la editorial inválida' : ''
+            }
+            value={publisherName}
+            error={publisherNameError}
+            onChange={(event) => validatePublisherName(event)}
             margin="dense"
             id="publisher_name"
             name="publisher_name"
@@ -121,8 +238,12 @@ export default function AddItem({ onAddItem }: AddItemProps) {
             margin="dense"
             id="num_pages"
             name="num_pages"
+            helperText={numPagesError ? 'Número de páginas inválido' : ''}
+            value={numPages}
+            error={numPagesError}
+            onChange={(event) => validateNumPages(event)}
             label="Numero de páginas"
-            type="text"
+            type="number"
             fullWidth
             variant="standard"
           />
@@ -132,6 +253,10 @@ export default function AddItem({ onAddItem }: AddItemProps) {
             id="img_book"
             name="img_book"
             label="Imagen"
+            helperText={imgUrlError ? 'URL Imagen Inválida' : ''}
+            value={imgUrl}
+            error={imgUrlError}
+            onChange={(event) => validateImgUrl(event)}
             type="text"
             fullWidth
             variant="standard"
