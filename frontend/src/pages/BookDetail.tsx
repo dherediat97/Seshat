@@ -18,7 +18,7 @@ import BackButton from '../components/BackButton';
 export default function BookDetail() {
   var [book, setBook] = useState<Book>();
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [bookId, setBookId] = useState('');
+  const [bookId, setBookId] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingReviews, setIsLoadingReviews] = useState(true);
   const { isbn } = useParams();
@@ -29,11 +29,11 @@ export default function BookDetail() {
     try {
       const fetchedBook = await fetchBook(isbn as string);
       if (fetchedBook) {
-        setBookId(fetchedBook.id);
+        setBookId(fetchedBook.id!);
         setBook(fetchedBook);
       } else {
         const localBook = fetchLocalBook();
-        setBookId(localBook.id);
+        setBookId(localBook.id!);
         setBook(localBook);
       }
     } catch (error) {
@@ -51,7 +51,7 @@ export default function BookDetail() {
 
   async function getReviews() {
     setIsLoadingReviews(true);
-    const fetchedReviews = await fetchBookReview(bookId as string);
+    const fetchedReviews = await fetchBookReview(bookId as number);
     setReviews(fetchedReviews);
     setIsLoadingReviews(false);
   }
