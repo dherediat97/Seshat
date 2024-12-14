@@ -16,7 +16,7 @@ export type InfoBookListResponse = {
 
 //Book Class
 export type Book = {
-  id: string;
+  id?: number;
   isbn: string;
   imgSrc: string;
   title: string;

@@ -6,7 +6,7 @@ import {
   Typography,
   useMediaQuery,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Book } from '../types/types';
 import { fetchAllBooks } from '../api/fetchBooks';
 import Searchbar from '../components/Searchbar';
@@ -25,6 +25,7 @@ const TRESHOLD_INFINITE_SCROLL = 0.85;
 export default function BookList() {
   const [books, setBooks] = useState<Book[]>([]);
   const [query, setQuery] = useState('');
+  const hasBeenReendered = useRef(false);
   const [isLoading, setIsLoading] = useState(false);
   const [searchError, setSearchError] = useState(false);
   const [page, setPage] = useState(1);
@@ -34,18 +35,22 @@ export default function BookList() {
   const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
 
   const fetchBooks = async () => {
-    setIsLoading(true);
     const bookResponse = await fetchAllBooks(page);
     if (bookResponse) {
       setTotalPages(bookResponse.info.totalPages);
-      setBooks([...books, ...bookResponse.books]);
+      const newBooks = [...books, ...bookResponse.books];
+      setBooks(newBooks);
+      localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(newBooks));
     }
-    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
     setIsLoading(false);
   };
 
   const searchBooks = async () => {
-    setIsLoading(true);
+    if (!query) {
+      onRestoreAll();
+      return;
+    }
+
     const bookResponse = await fetchSearchBooks(encodeURI(query));
     if (bookResponse?.booksFound.length) {
       setSearchError(false);
@@ -57,22 +62,17 @@ export default function BookList() {
   };
 
   const onAddBook = (bookAdded: Book) => {
-    books.push(bookAdded);
-    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(books));
-    fetchBooks();
+    setBooks([...books, bookAdded]);
     setIsBookCreated(true);
     setEmptyLibrary(false);
   };
 
   const onRestoreAll = async () => {
-    setIsLoading(true);
     setSearchError(false);
     const bookResponse = await fetchAllBooks(1);
     if (bookResponse) {
       setBooks(bookResponse.books);
-      setPage(1);
     }
-    setIsLoading(false);
     setEmptyLibrary(false);
     localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(bookResponse?.books));
   };
@@ -91,20 +91,12 @@ export default function BookList() {
   const handleScroll = () => {
     if (
       document.body.scrollHeight * TRESHOLD_INFINITE_SCROLL <
-      window.scrollY + window.innerHeight
+        window.scrollY + window.innerHeight &&
+      query == ''
     ) {
       setIsLoading(true);
     }
   };
-
-  useEffect(() => {
-    if (query == '') onRestoreAll();
-    else if (query.length > 3) debounce(searchBooks(), 400);
-  }, [query]);
-
-  useEffect(() => {
-    fetchBooks();
-  }, [page]);
 
   useEffect(() => {
     if (isLoading && page < totalPages) {
@@ -113,15 +105,18 @@ export default function BookList() {
   }, [isLoading]);
 
   useEffect(() => {
+    if (hasBeenReendered.current) debounce(searchBooks(), 400);
+    hasBeenReendered.current = true;
+  }, [query]);
+
+  useEffect(() => {
+    fetchBooks();
+  }, [page]);
+
+  useEffect(() => {
     window.addEventListener('scroll', debounce(handleScroll, 100));
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  //Prevent duplicates books
-  const uniqueBooks = books.filter(
-    (book: any, index: number) =>
-      books.findIndex((other: any) => other.id === book.id) === index
-  );
 
   return (
     <>
@@ -167,7 +162,7 @@ export default function BookList() {
               rowSpacing={8}
               columnSpacing={8}
             >
-              {uniqueBooks.map((book, index) => (
+              {books.map((book, index) => (
                 <Grid2 key={index}>
                   <BookItem
                     book={book}
