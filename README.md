@@ -5,6 +5,11 @@
 - Node.JS
 - XAMPP o Similar en Local con MySQL y Apache
 
+## Tecnologías usadas:
+- Express
+- MySQL/PostgreSQL
+- Vercel (para el despliegue del backend)
+
 ## Instalación:
 
 - Clonar el repositorio de ambos proyectos usando Git
@@ -105,8 +110,12 @@ npm run backend
 ## Prerequisitos:
 
 - Node.JS
+
+## Tecnologías usadas:
+- Material UI
 - ReactJS
 - Vite
+- Vercel (para el despliegue del frontend)
 
 # Instalación:
 
