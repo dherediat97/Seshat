@@ -138,4 +138,3 @@ npm run backend
 ### Problemas encontrados:
 - La securización de las peticiones la he hecho pensando sin una pantalla de inicio de sesión, solo de manera que las peticiones estén protegidas ante orígenes desconocidos.
 - La búsqueda en un principio la hice basándome en el localStorage, pero luego la hice usando peticiones contra la BBDD. Porque así se podrá buscar todos los libros que existan, ya estén en el localStorage o esten en la BBDD y no estén todavía guardados en el localStorage.
-- La doble carpeta "api/api" es requerida por Vercel.
