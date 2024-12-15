@@ -74,7 +74,7 @@ ALTER TABLE `reviews`
 ADD CONSTRAINT `book_id_FK` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`);
 ```
 
-- Insertar los datos usando postman o sql, ambas tablas(books y reviews) tienen el CRUD completo
+- Insertar los datos correspondientes usando sql ambas tablas(books y reviews)
 
 ```sql
 INSERT INTO `books` (`id`, `isbn`, `title`, `author_name`, `publisher_name`, `num_pages`, `img_url`, `date_published`) VALUES
@@ -105,7 +105,7 @@ npm run backend
 ## Prerequisitos:
 
 - Node.JS
-- React.JS
+- ReactJS
 - Vite
 
 # Instalación:
@@ -136,7 +136,6 @@ npm run backend
 
 
 ### Problemas encontrados:
-- No he podido pasar el backend a Typescript.
 - La securización de las peticiones la he hecho pensando sin una pantalla de inicio de sesión, solo de manera que las peticiones estén protegidas ante orígenes desconocidos.
 - La búsqueda en un principio la hice basándome en el localStorage, pero luego la hice usando peticiones contra la BBDD. Porque así se podrá buscar todos los libros que existan, ya estén en el localStorage o esten en la BBDD y no estén todavía guardados en el localStorage.
-- La doble carpeta "api/api" es requerida por Vercel. No entiendo porque se debe de hacer, pero podría ser que es una configuración por defecto de ellos. No me funcionaba de otra manera y me requería que estuviese con esa estructura.
+- La doble carpeta "api/api" es requerida por Vercel.
