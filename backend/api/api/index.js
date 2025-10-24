@@ -14,10 +14,7 @@ const { isProd } = require('../config');
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var corsOptions = {
-  origin: process.env.WEBSITE_URL,
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-};
+const allowedOrigins = ['http://localhost:5173', process.env.WEBSITE_URL];
 const secretKey = process.env.SECRET_KEY;
 
 const port = process.env.PORT || 8080;
@@ -62,7 +59,18 @@ app.post('/api/login', (req, res) => {
 });
 
 app.use(logger('dev'));
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  })
+);
 
 app.get('/', (req, res) => {
   res.json({ message: 'ok' });
