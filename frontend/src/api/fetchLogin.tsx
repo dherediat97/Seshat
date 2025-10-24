@@ -6,10 +6,9 @@ export async function fetchLogin() {
     username: import.meta.env.VITE_API_USERNAME,
     password: import.meta.env.VITE_API_PASSWORD,
   });
-
   if (response) {
     localStorage.setItem(AUTHORIZATION_KEY, response.data.token);
   }
 
-  return localStorage.getItem(AUTHORIZATION_KEY);
+  return response.data.token;
 }

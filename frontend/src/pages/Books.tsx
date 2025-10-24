@@ -13,9 +13,6 @@ import { fetchAllBooks } from '../api/fetchBooks';
 import Searchbar from '../components/Searchbar';
 import BookItem from '../components/BookItem';
 import LoadingScreen from '../components/LoadingScreen';
-import AddItem from '../components/AddItem';
-import { LOCAL_BOOKS_KEY } from '../app/app_constants';
-import RestoreItems from '../components/RestoreItems';
 import debounce from '../utils/scroll_utils';
 import { fetchSearchBooks } from '../api/fetchSearchBooks';
 import theme from '../theme';
@@ -41,52 +38,25 @@ export default function BookList() {
       setTotalPages(bookResponse.info.totalPages);
       const newBooks = [...books, ...bookResponse.books];
       setBooks(newBooks);
-      localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(newBooks));
+    } else {
+      setEmptyLibrary(true);
     }
     setIsLoading(false);
   };
 
   const searchBooks = async () => {
-    if (!query) {
-      onRestoreAll();
-      return;
-    }
-
     const bookResponse = await fetchSearchBooks(encodeURI(query));
     if (bookResponse?.booksFound.length) {
       setSearchError(false);
       setBooks(bookResponse.booksFound);
     } else {
       setSearchError(true);
+      setEmptyLibrary(true);
     }
     setIsLoading(false);
   };
 
-  const onAddBook = (bookAdded: Book) => {
-    setBooks([...books, bookAdded]);
-    setSnackBarShown(true);
-    setEmptyLibrary(false);
-  };
 
-  const onRestoreAll = async () => {
-    setSearchError(false);
-    const bookResponse = await fetchAllBooks(1);
-    if (bookResponse) {
-      setBooks(bookResponse.books);
-    }
-    setEmptyLibrary(false);
-    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(bookResponse?.books));
-  };
-
-  const onDeleteBook = (bookToDelete: Book) => {
-    var bookNotDeleted: Book[] = books.filter(
-      (book) => book.isbn !== bookToDelete.isbn
-    );
-    localStorage.setItem(LOCAL_BOOKS_KEY, JSON.stringify(bookNotDeleted));
-
-    setBooks(JSON.parse(localStorage.getItem(LOCAL_BOOKS_KEY)!));
-    if (bookNotDeleted.length == 0) setEmptyLibrary(true);
-  };
 
   const handleClose = (
     _: React.SyntheticEvent | Event,
@@ -95,7 +65,6 @@ export default function BookList() {
     if (reason === 'clickaway') {
       return;
     }
-
     setSnackBarShown(false);
   };
 
@@ -103,7 +72,7 @@ export default function BookList() {
   const handleScroll = () => {
     if (
       document.body.scrollHeight * TRESHOLD_INFINITE_SCROLL <
-        window.scrollY + window.innerHeight &&
+      window.scrollY + window.innerHeight &&
       query == ''
     ) {
       setIsLoading(true);
@@ -150,8 +119,6 @@ export default function BookList() {
         spacing={8}
       >
         <Searchbar query={query} setQuery={setQuery} />
-        <AddItem onAddItem={(book) => onAddBook(book)} />
-        <RestoreItems onRestore={() => onRestoreAll()} />
       </Stack>
       {emptyLibrary ? (
         <Box
@@ -177,10 +144,7 @@ export default function BookList() {
             >
               {books.map((book, index) => (
                 <Grid2 key={index}>
-                  <BookItem
-                    book={book}
-                    onDeleteBook={() => onDeleteBook(book)}
-                  />
+                  <BookItem book={book} />
                 </Grid2>
               ))}
             </Grid2>

@@ -1,23 +1,18 @@
 import {
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
-  IconButton,
   ListItem,
-  Tooltip,
   Typography,
 } from '@mui/material';
 import { Book } from '../types/types';
-import DeleteIcon from '@mui/icons-material/Delete';
 
 type BookItemProps = {
   book: Book;
-  onDeleteBook: (book: Book, onDeleteBook: boolean) => void;
 };
 
-export default function BookItem({ book, onDeleteBook }: BookItemProps) {
+export default function BookItem({ book }: BookItemProps) {
   return (
     <ListItem sx={{ padding: 8 }}>
       <Card>
@@ -47,17 +42,6 @@ export default function BookItem({ book, onDeleteBook }: BookItemProps) {
             </Typography>
           </CardContent>
         </CardActionArea>
-        <CardActions sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-          {!book.isDeleted ? (
-            <Tooltip title="Borrar libro de la memoria local">
-              <IconButton onClick={() => onDeleteBook(book, false)}>
-                <DeleteIcon />
-              </IconButton>
-            </Tooltip>
-          ) : (
-            <></>
-          )}
-        </CardActions>
       </Card>
     </ListItem>
   );
