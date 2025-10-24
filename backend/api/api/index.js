@@ -37,7 +37,7 @@ function verifyToken(req, res, next) {
   }
 }
 
-app.post('/login', (req, res) => {
+app.post('/api/login', (req, res) => {
   try {
     res.header('Access-Control-Allow-Origin', '*');
     const username = req.body.username;
@@ -68,9 +68,9 @@ app.get('/', (req, res) => {
   res.json({ message: 'ok' });
 });
 
-app.use('/books', verifyToken, booksRouter);
-app.use('/book', verifyToken, bookRouter);
-app.use('/reviews', verifyToken, reviewsRouter);
+app.use('/api/books', verifyToken, booksRouter);
+app.use('/api/book', verifyToken, bookRouter);
+app.use('/api/reviews', verifyToken, reviewsRouter);
 
 app.listen(port, () => {
   console.log(`Server listening in the port ${port}`);
