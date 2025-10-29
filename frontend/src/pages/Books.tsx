@@ -1,6 +1,6 @@
 import {
   Box,
-  Grid2,
+  Grid,
   Snackbar,
   SnackbarCloseReason,
   Stack,
@@ -45,6 +45,8 @@ export default function BookList() {
   };
 
   const searchBooks = async () => {
+    if (query === "") fetchBooks();
+
     const bookResponse = await fetchSearchBooks(encodeURI(query));
     if (bookResponse?.booksFound.length) {
       setSearchError(false);
@@ -134,7 +136,7 @@ export default function BookList() {
           {searchError ? (
             <SearchNotFoundPage />
           ) : (
-            <Grid2
+            <Grid
               container
               direction={isMobile ? 'column' : 'row'}
               justifyContent={isMobile ? 'center' : 'flex-start'}
@@ -143,11 +145,11 @@ export default function BookList() {
               columnSpacing={8}
             >
               {books.map((book, index) => (
-                <Grid2 key={index}>
+                <Grid key={index}>
                   <BookItem book={book} />
-                </Grid2>
+                </Grid>
               ))}
-            </Grid2>
+            </Grid>
           )}
         </>
       )}

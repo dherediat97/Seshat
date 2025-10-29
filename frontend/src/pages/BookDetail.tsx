@@ -6,7 +6,7 @@ import {
   Card,
   CardContent,
   CardMedia,
-  Grid2,
+  Grid,
   Typography,
 } from '@mui/material';
 import { fetchBook } from '../api/fetchBook';
@@ -85,8 +85,8 @@ export default function BookDetail() {
           >
             {book.title}
           </Typography>
-          <Grid2 container spacing={2}>
-            <Grid2 size={{ xs: 12, md: 3 }}>
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, md: 3 }}>
               <Card>
                 <CardMedia
                   sx={{
@@ -114,8 +114,8 @@ export default function BookDetail() {
                   </Typography>
                 </CardContent>
               </Card>
-            </Grid2>
-            <Grid2 size={{ xs: 12, md: 8 }}>
+            </Grid>
+            <Grid size={{ xs: 12, md: 8 }}>
               {isLoadingReviews ? (
                 <LoadingScreen />
               ) : reviews.length > 0 ? (
@@ -139,8 +139,8 @@ export default function BookDetail() {
                   No hay reseñas
                 </Typography>
               )}
-            </Grid2>
-          </Grid2>
+            </Grid>
+          </Grid>
         </>
       )}
     </Box>
